@@ -6,11 +6,11 @@ $(document).ready(function () {
 	var month = 0;
 	var day = 0;
 	drawCalendar(selectedMonth);
-	
+
 	$("#requiredMinPerDay").keyup(function () {
 		$('#requiredMinPerDay').attr("value", this.value);
 	});
-	
+
 	$(document).on("click", ".btn.add-day", function () {
 		var id = "";
 		id = $(this).attr("id");
@@ -23,17 +23,17 @@ $(document).ready(function () {
 		console.log(month);
 		console.log(day);
 	});
-		
+
 	$("#setHourButton").click(function () {
 		var requiredHoursS = $("#requiredMinPerDay").attr('value');
 		$('#requiredMinPerDay').attr("value", "");
 		$('#setHour')[0].reset();
 		var requiredHours = parseFloat(requiredHoursS);
 		var workDayBean = {
-				"year": year,
-				"month": month,
-				"day": day,
-				"requiredHours": requiredHours
+			"year": year,
+			"month": month,
+			"day": day,
+			"requiredHours": requiredHours
 		};
 		$.ajax({
 			type: "POST",
@@ -42,65 +42,64 @@ $(document).ready(function () {
 			dataType: "json",
 			data: JSON.stringify(workDayBean),
 			traditional: true,
-			success: function (json) {
-			console.log(json);
-				$.ajax({
-					type: "GET",
-					url: "http://127.0.0.1:9090/tlog-backend/timelogger/workmonths",
-					contentType: "application/json; charset=utf-8",
-					dataType: "json",
-					traditional: true,
-					success: function (json) {
-						console.log(json);
-						console.log(json[0]);
-						console.log(json[0].requiredMinPerMonth);
-						console.log(json[0].sumPerMonth);
-						console.log(json[0].extraMinPerMonth);
-						console.log(json[0].days);
-						console.log((json[0].days)[json[0].days.length - 1]);
-						for (i = 0; i < json.length; i++) {
-							var monthDateSplitted = json[i].monthDate.split("-");
-							if (parseInt(monthDateSplitted[0]) === year && parseInt(monthDateSplitted[1]) === month){
-								$("#extraMonthly").next().text(" " + json[i].extraMinPerMonth);
-								$("#sumMonthly").next().text(" " + json[i].sumPerMonth);
-								if (parseInt(json[i].extraMinPerMonth) >= 0){
-									$("#extraMonthly").css("color", "green");
-									$("#extraMonthly").next().css("color", "green");
-								} else {
-									$("#extraMonthly").css("color", "red");
-									$("#extraMonthly").next().css("color", "red");
-								}
-								$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("#extraDaily").append((json[i].days)[json[i].days.length - 1].extraMinPerDay);
-								if ((json[i].days)[json[i].days.length - 1].extraMinPerDay >= 0){
-									$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("#extraDaily").css("color", "green");
-								} else $("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("#extraDaily").css("color", "red");
+			error: function (json) {
+				console.log(json);
+				console.log(json.status);
+				if (json.status === 428) {
+					console.log("Státusz");
+					if (confirm('Are you sure that this weekend day is a work day')) {
+						console.log("YES");
+						$.ajax({
+							type: "POST",
+							url: "http://127.0.0.1:9090/tlog-backend/timelogger/workmonths/workdays/weekend",
+							contentType: "application/json; charset=utf-8",
+							dataType: "json",
+							data: JSON.stringify(workDayBean),
+							traditional: true,
+							success: function (json, textStatus, jqXHR) {
+								console.log("status: " + textStatus);
+								console.log(jqXHR.status);
+								addDayAndSetStatistics(json);
+								changeCellWhenDayCreated();
 							}
+						});
 						}
+								
+					} else {
+						console.log("NO");
 					}
-				});
+				},
+			success: function (json, textStatus, jqXHR) {
+				console.log("status: " + textStatus);
+				console.log(jqXHR.status);
+				addDayAndSetStatistics(json);
+				changeCellWhenDayCreated();
 			}
 		});
-		$("button[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").css("visibility", "hidden");
-		$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").css("background", "white");
-		$("span[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").css("display", "block");
-		$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("p").css("visibility", "visible");
 	});
-		
-		/*calendar pagination*/
+
+	/*calendar pagination*/
 	$("#nextMonth").click(function () {
 		selectedMonth.addMonths(1);
 		$("#selected-month").text(selectedMonth.getFullYear() + "-" + (selectedMonth.getMonth() + 1));
 		drawCalendar(selectedMonth);
 	});
-		
+
 	$("#prevMonth").click(function () {
-		selectedMonth.addMonths( - 1);
+		selectedMonth.addMonths(-1);
 		$("#selected-month").text(selectedMonth.getFullYear() + "-" + (selectedMonth.getMonth() + 1));
 		drawCalendar(selectedMonth);
 	});
-	
+
 	$("#selected-month").text(selectedMonth.getFullYear() + "-" + (selectedMonth.getMonth() + 1));
-	
+
+	function changeCellWhenDayCreated() {
+		$("button[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").css("visibility", "hidden");
+		$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").css("background", "white");
+		$("span[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").css("display", "block");
+		$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("p").css("visibility", "visible");
+	}
+
 	function drawCalendar(actualMonth) {
 		$(".row.calendar-week").remove();
 		$(".grid-calendar").append('<div class="row calendar-week" ></div>');
@@ -173,23 +172,63 @@ $(document).ready(function () {
 			success: function (json) {
 				for (i = 0; i < json.length; i++) {
 					var monthDateSplitted = json[i].monthDate.split("-");
-					if (parseInt(monthDateSplitted[0]) === actualMonth.getFullYear() && parseInt(monthDateSplitted[1]) === actualMonth.getMonth() + 1){
+					if (parseInt(monthDateSplitted[0]) === actualMonth.getFullYear() && parseInt(monthDateSplitted[1]) === actualMonth.getMonth() + 1) {
 						$("#extraMonthly").next().text(" " + json[i].extraMinPerMonth);
 						$("#sumMonthly").next().text(" " + json[i].sumPerMonth);
-								if (parseInt(json[i].extraMinPerMonth) >= 0){
-									$("#extraMonthly").css("color", "green");
-									$("#extraMonthly").next().css("color", "green");
-								} else {
-									$("#extraMonthly").css("color", "red");
-									$("#extraMonthly").next().css("color", "red");
-								}
+						if (parseInt(json[i].extraMinPerMonth) >= 0) {
+							$("#extraMonthly").css("color", "green");
+							$("#extraMonthly").next().css("color", "green");
+						} else {
+							$("#extraMonthly").css("color", "red");
+							$("#extraMonthly").next().css("color", "red");
 						}
-						}
-						}
-				
-				});
+					}
+				}
 			}
-	});
+
+		});
+	}
+
+	function addDayAndSetStatistics(json) {
+		console.log(json);
+		$.ajax({
+			type: "GET",
+			url: "http://127.0.0.1:9090/tlog-backend/timelogger/workmonths",
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			traditional: true,
+			success: function (json) {
+				console.log(json);
+				console.log(json[0]);
+				console.log(json[0].requiredMinPerMonth);
+				console.log(json[0].sumPerMonth);
+				console.log(json[0].extraMinPerMonth);
+				console.log(json[0].days);
+				console.log((json[0].days)[json[0].days.length - 1]);
+				for (i = 0; i < json.length; i++) {
+					var monthDateSplitted = json[i].monthDate.split("-");
+					if (parseInt(monthDateSplitted[0]) === year && parseInt(monthDateSplitted[1]) === month) {
+						$("#extraMonthly").next().text(" " + json[i].extraMinPerMonth);
+						$("#sumMonthly").next().text(" " + json[i].sumPerMonth);
+						if (parseInt(json[i].extraMinPerMonth) >= 0) {
+							$("#extraMonthly").css("color", "green");
+							$("#extraMonthly").next().css("color", "green");
+						} else {
+							$("#extraMonthly").css("color", "red");
+							$("#extraMonthly").next().css("color", "red");
+						}
+						$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("#extraDaily").append((json[i].days)[json[i].days.length - 1].extraMinPerDay);
+						if ((json[i].days)[json[i].days.length - 1].extraMinPerDay >= 0) {
+							$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("#extraDaily").css("color", "green");
+						} else
+							$("div[id='" + year.toString() + "-" + month.toString() + "-" + day.toString() + "']").children("#extraDaily").css("color", "red");
+					}
+				}
+			}
+		});
+	}
+});
+
 				
 
 
