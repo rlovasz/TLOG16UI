@@ -47,16 +47,16 @@ and open the template in the editor.
 			<div class="col-md-12">
 				<div class="grid-calendar ">
 					<div class="row calendar-week-header">
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Mon</p></div>
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Tue</p></div>
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Wed</p></div>
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Thu</p></div>
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Fri</p></div>
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Sat</p></div>
-						<div id="dayName" class="col-xs-1 grid-cell"><p>Sun</p></div>
-					</div>
+						<div class="col-xs-1 grid-cell dayName"><p>Mon</p></div>
+						<div class="col-xs-1 grid-cell dayName"><p>Tue</p></div>
+						<div class="col-xs-1 grid-cell dayName"><p>Wed</p></div>
+						<div class="col-xs-1 grid-cell dayName"><p>Thu</p></div>
+						<div class="col-xs-1 grid-cell dayName"><p>Fri</p></div>
+						<div class="col-xs-1 grid-cell dayName"><p>Sat</p></div>
+						<div class="col-xs-1 grid-cell dayName"><p>Sun</p></div>
 					</div>
 				</div>
+			</div>
 			<div class="modal fade" id="myModal" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -66,8 +66,8 @@ and open the template in the editor.
 						</div>
 						<div class="modal-body">
 							<form id="setHour">
-							<label>Set hours:</label><br>
-							<input type="text" name="requiredMinPerDay" id="requiredMinPerDay" placeholder="The required hours" autofocus="autofocus" autocomplete="off"><br>
+								<label>Set hours:</label><br>
+								<input type="text" name="requiredMinPerDay" id="requiredMinPerDay" placeholder="The required hours" autofocus="autofocus" autocomplete="off"><br>
 							</form>
 						</div>
 						<div class="modal-footer">

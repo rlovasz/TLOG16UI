@@ -46,7 +46,7 @@ h1{
 	
 }
 
-.grid-cell.day p#dayOfMonth{
+.grid-cell.day p.dayOfMonth{
 	text-align: left;
 	font-size: 30px;
 	float: left;
@@ -81,11 +81,11 @@ a .glyphicon-pencil{
 	background: darkcyan;
 }
 
-div#dayName{
+div.dayName{
 	height: 22px;
 }
 
-div#dayName p{
+div.dayName p{
 	text-align: center;
 }
 
@@ -133,27 +133,27 @@ th,td{
 	text-align: center;
 }
 
-th[id="taskId"]{
+th#taskId{
 	width: 10%;
 }
 
-th[id="comment"]{
+th#comment{
 	width: 40%;
 }
 
-th[id="startTime"]{
+th#startTime{
 	width: 10%;
 }
 
-th[id="endTime"]{
+th#endTime{
 	width: 10%;
 }
 
-th[id="minPerTask"]{
+th#minPerTask{
 	width: 15%;
 }
 
-span[id="glyphicons"] button{
+span#glyphicons button{
 	appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -188,22 +188,22 @@ input[name="endTime"]{
 	width: 10%;
 }
 
-p[class="modal-title"]{
+p.modal-title{
 	font-size: 20px;
 }
 
-div[class="modal-body"] p{
+div.modal-body p{
 	text-align: center;
 	font-size: 20px;
 }
 
-div[class="modal-footer"] button{
+div.modal-footer button{
 	margin: 0 22%;
 	font-size: 20px;
 }
 
 /*Daily statistics*/
-div[id="dailyStat"]{
+div.dailyStat{
 	margin: 0 30px;
 	height: 100px;
 	width: 270px;
@@ -212,12 +212,12 @@ div[id="dailyStat"]{
 	border-width: 1px;
 	text-align: left;
 }
-p[id="dailyStat"]{
-	font-size: 18px;
+p.dailyStat{
+	font-size: 15px;
 }
 
 /*Monthly statistics*/
-div[id="monthlyStat"]{
+div#monthlyStat{
 	margin: 0 50px;
 	height: 55px;
 	width: 270px;
@@ -230,11 +230,7 @@ div[id="monthlyStat"]{
 	display: inline-table;
 }
 
-p[id="dailyStat"]{
-	font-size: 15px;
-}
-
 /*new task button*/
-button[id="addNewTask"]{
+button#addNewTask{
 	color: darkcyan;
 }
